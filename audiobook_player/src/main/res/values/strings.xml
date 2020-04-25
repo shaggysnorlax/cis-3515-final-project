@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">AudiobookPlayer</string>
+    <string name="notification_channel">AUDIOBOOK_CONTROL</string>
+    <string name="notification_channel_description">Control audiobook playback</string>
+    <string name="notification_playing_title">AudioBook is playing</string>
+    <string name="notification_playing_description">Open app to control playback</string>
+</resources>
