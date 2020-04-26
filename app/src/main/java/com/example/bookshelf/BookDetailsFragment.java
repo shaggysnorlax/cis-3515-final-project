@@ -1,5 +1,6 @@
 package com.example.bookshelf;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -7,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -22,6 +24,9 @@ public class BookDetailsFragment extends Fragment {
 
     TextView titleTextView, authorTextView;
     ImageView coverImageView;
+    Button playButton;
+
+    private PlayButtonPressedInterface parentActivity;
 
     public BookDetailsFragment() {}
 
@@ -40,6 +45,21 @@ public class BookDetailsFragment extends Fragment {
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        /*
+         This fragment needs to communicate with its parent activity
+         so we verify that the activity implemented our known interface
+         */
+        if (context instanceof PlayButtonPressedInterface) {
+            parentActivity = (PlayButtonPressedInterface) context;
+        } else {
+            throw new RuntimeException("Please implement the required interface(s)");
+        }
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
@@ -55,6 +75,7 @@ public class BookDetailsFragment extends Fragment {
         titleTextView = v.findViewById(R.id.titleTextView);
         authorTextView = v.findViewById(R.id.authorTextView);
         coverImageView = v.findViewById(R.id.coverImageView);
+        playButton = v.findViewById(R.id.playButton);
 
         /*
         Because this fragment can be created with or without
@@ -63,8 +84,17 @@ public class BookDetailsFragment extends Fragment {
          */
         if (book != null)
             displayBook(book);
+
+        playButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                parentActivity.playButtonPressed(book);
+            }
+        });
         return v;
     }
+
+
 
     /*
     This method is used both internally and externally (from the activity)
@@ -76,5 +106,10 @@ public class BookDetailsFragment extends Fragment {
         // Picasso simplifies image loading from the web.
         // No need to download separately.
         Picasso.get().load(book.getCoverUrl()).into(coverImageView);
+        this.book = book;
+    }
+
+    interface PlayButtonPressedInterface {
+        void playButtonPressed(Book book);
     }
 }
