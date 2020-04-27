@@ -330,32 +330,6 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         }
     }
 
-    /*private static class ProgressHandler extends Handler {
-        MainActivity parentActivity;
-        public static int time;
-        public static int bookId;
-        public static String bookName;
-
-        private ProgressHandler(Context activity) {
-            super();
-            this.parentActivity = (MainActivity)activity;
-        }
-
-        @Override
-        public void handleMessage(@NonNull Message message) {
-            super.handleMessage(message);
-
-            AudiobookService.BookProgress progress = (AudiobookService.BookProgress) message.obj;
-
-            if(parentActivity != null && progress != null) {
-                time = progress.getProgress();
-                bookId = progress.getBookId();
-                parentActivity.seekBar.setProgress(progress.getProgress());
-
-            }
-        }
-    }*/
-
     @Override
     public void onDestroy() {
         super.onDestroy();
