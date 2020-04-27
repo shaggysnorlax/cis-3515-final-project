@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
@@ -38,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     private static final String SELECTED_BOOK_KEY = "selectedBook";
     private static final String CURRENT_BOOK_KEY = "currentBook";
     private static final String SAVED_PROGRESS_KEY = "savedProgress";
+    private static final String NOW_PLAYING_KEY = "nowPlaying";
 
     FragmentManager fm;
 
@@ -57,6 +59,8 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     //Handler messageHandler = new ProgressHandler(this);
     String currentBookName;
     int savedProgress, time, bookId;
+    String nowPlayingText;
+    TextView nowPlayingTextView;
 
     Intent bindIntent;
     Handler handler = new Handler() {
@@ -96,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     private final String SEARCH_API = "https://kamorris.com/lab/abp/booksearch.php?search=";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -137,6 +141,9 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
                 if(connected) {
                     binder.stop();
                     seekBar.setProgress(0);
+                    nowPlayingText = "";
+                    nowPlayingTextView = findViewById(R.id.nowPlaying);
+                    nowPlayingTextView.setText(nowPlayingText);
                     stopService(bindIntent);
                 }
             }
@@ -173,6 +180,9 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
             selectedBook = savedInstanceState.getParcelable(SELECTED_BOOK_KEY);
             currentBookName = savedInstanceState.getString(CURRENT_BOOK_KEY);
             savedProgress = savedInstanceState.getInt(SAVED_PROGRESS_KEY);
+            nowPlayingText = savedInstanceState.getString(NOW_PLAYING_KEY);
+            nowPlayingTextView = findViewById(R.id.nowPlaying);
+            nowPlayingTextView.setText(nowPlayingText);
         }
         else
             books = new ArrayList<Book>();
@@ -301,6 +311,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         outState.putParcelable(SELECTED_BOOK_KEY, selectedBook);
         outState.putString(CURRENT_BOOK_KEY, currentBookName);
         outState.putInt(SAVED_PROGRESS_KEY, savedProgress);
+        outState.putString(NOW_PLAYING_KEY, nowPlayingText);
     }
 
     @Override
@@ -313,6 +324,9 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
             seekBar.setMax(book.getDuration());
             binder.play(book.getId());
             currentBookName = book.getTitle();
+            nowPlayingText = "Now Playing: " + book.getTitle();
+            nowPlayingTextView = findViewById(R.id.nowPlaying);
+            nowPlayingTextView.setText(nowPlayingText);
         }
     }
 
